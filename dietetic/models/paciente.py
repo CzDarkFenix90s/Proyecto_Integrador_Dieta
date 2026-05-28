@@ -1,0 +1,61 @@
+from django.db import models
+
+
+class Paciente(models.Model):
+    STATUS_CHOICES = [
+        ('activo', 'Activo'),
+        ('en_seguimiento', 'En seguimiento'),
+        ('inactivo', 'Inactivo'),
+    ]
+
+    patient_code           = models.CharField(max_length=20, unique=True)
+    full_name              = models.CharField(max_length=120)
+    age                    = models.PositiveIntegerField()
+    goal                   = models.CharField(max_length=200)
+    dietary_restrictions   = models.TextField(blank=True, default='')
+    current_weight         = models.DecimalField(max_digits=6, decimal_places=2)
+    height_cm              = models.DecimalField(max_digits=6, decimal_places=2)
+    status                 = models.CharField(max_length=20, choices=STATUS_CHOICES, default='activo')
+    medical_notes          = models.TextField(blank=True, default='')
+    created_at             = models.DateTimeField(auto_now_add=True)
+    updated_at             = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    @property
+    def bmi(self):
+        height_m = max(float(self.height_cm) / 100, 0.01)
+        return round(float(self.current_weight) / (height_m ** 2), 2)
+
+    @property
+    def full_profile(self):
+        return f'{self.full_name} ({self.patient_code})'
+
+    def __str__(self):
+        return f'{self.full_name} — {self.patient_code}'
+
+
+class SeguimientoNutricional(models.Model):
+    paciente    = models.ForeignKey(
+        Paciente,
+        on_delete=models.CASCADE,
+        related_name='seguimientos',
+    )
+    weight_kg   = models.DecimalField(max_digits=6, decimal_places=2)
+    waist_cm    = models.DecimalField(max_digits=6, decimal_places=2, blank=True, null=True)
+    notes       = models.TextField(blank=True, default='')
+    created_at  = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    @property
+    def weight_change(self):
+        baseline = self.paciente.seguimientos.order_by('created_at').first()
+        if baseline is None:
+            return 0
+        return round(float(self.weight_kg) - float(baseline.weight_kg), 2)
+
+    def __str__(self):
+        return f'Seguimiento de {self.paciente.full_name} — {self.weight_kg} kg'
