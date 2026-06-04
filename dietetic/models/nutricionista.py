@@ -1,8 +1,15 @@
-# dietetic/models/nutricionista.py
 from django.db import models
+from django.contrib.auth.models import User
 
 
 class Nutricionista(models.Model):
+    user = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE,
+        related_name='nutricionista_profile',
+        null=True,
+        blank=True
+    )
     first_name          = models.CharField(max_length=100)
     last_name           = models.CharField(max_length=100)
     professional_id     = models.CharField(max_length=50, unique=True)

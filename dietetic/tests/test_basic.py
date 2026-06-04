@@ -70,3 +70,4 @@ class DieteticDomainTest(TestCase):
         self.assertEqual(self.alimento.plan_nutricional.goal, 'Pérdida de peso')
         self.assertEqual(self.alimento.estimated_preparation_minutes, round(120 / 30, 2))
 
+

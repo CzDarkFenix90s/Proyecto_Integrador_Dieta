@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 
 class Paciente(models.Model):
@@ -8,13 +9,20 @@ class Paciente(models.Model):
         ('inactivo', 'Inactivo'),
     ]
 
+    user = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE,
+        related_name='paciente_profile',
+        null=True,
+        blank=True
+    )
     patient_code           = models.CharField(max_length=20, unique=True)
     full_name              = models.CharField(max_length=120)
-    age                    = models.PositiveIntegerField()
-    goal                   = models.CharField(max_length=200)
+    age                    = models.PositiveIntegerField(default=0)
+    goal                   = models.CharField(max_length=200, default='Salud integral')
     dietary_restrictions   = models.TextField(blank=True, default='')
-    current_weight         = models.DecimalField(max_digits=6, decimal_places=2)
-    height_cm              = models.DecimalField(max_digits=6, decimal_places=2)
+    current_weight         = models.DecimalField(max_digits=6, decimal_places=2, default=0.0)
+    height_cm              = models.DecimalField(max_digits=6, decimal_places=2, default=0.0)
     status                 = models.CharField(max_length=20, choices=STATUS_CHOICES, default='activo')
     medical_notes          = models.TextField(blank=True, default='')
     created_at             = models.DateTimeField(auto_now_add=True)

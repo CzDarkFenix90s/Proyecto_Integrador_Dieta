@@ -1,6 +1,6 @@
-# dietetic/serializers/user.py
 from rest_framework import serializers
 from django.contrib.auth.models import User
+from dietetic.models.paciente import Paciente
 
 
 class RegisterSerializer(serializers.Serializer):
@@ -26,26 +26,54 @@ class RegisterSerializer(serializers.Serializer):
 
     def create(self, validated_data):
         validated_data.pop('password2')
-        return User.objects.create_user(**validated_data)
+        user = User.objects.create_user(**validated_data)
+
+        # Crear automáticamente el perfil de Paciente al registrarse (si no lo creó la señal)
+        Paciente.objects.get_or_create(
+            user=user,
+            defaults={
+                'patient_code': f'PAC-{user.id:04d}',
+                'full_name': user.username,
+                'status': 'activo'
+            }
+        )
+
+        return user
 
 
 class UserSerializer(serializers.ModelSerializer):
+    role = serializers.SerializerMethodField()
 
     class Meta:
         model  = User
         fields = [
             'id', 'username', 'email', 'first_name', 'last_name',
-            'is_staff', 'is_active', 'date_joined',
+            'is_staff', 'is_active', 'date_joined', 'role'
         ]
         read_only_fields = ['id', 'date_joined']
 
+    def get_role(self, obj):
+        if obj.is_superuser:
+            return 'admin'
+        if hasattr(obj, 'nutricionista_profile'):
+            return 'nutricionista'
+        return 'paciente'
+
 
 class UserProfileSerializer(serializers.ModelSerializer):
+    role = serializers.SerializerMethodField()
 
     class Meta:
         model  = User
-        fields = ['id', 'username', 'email', 'first_name', 'last_name']
+        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'role']
         read_only_fields = ['id']
+
+    def get_role(self, obj):
+        if obj.is_superuser:
+            return 'admin'
+        if hasattr(obj, 'nutricionista_profile'):
+            return 'nutricionista'
+        return 'paciente'
 
     def validate_email(self, value):
         request = self.context.get('request')

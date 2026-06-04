@@ -9,7 +9,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Carga de variables desde .env (para llaves que no rompen la app si faltan)
 SECRET_KEY    = config('SECRET_KEY', default='test_secret_key_provisional_12345')
 DEBUG         = config('DEBUG', default=True, cast=bool)
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='127.0.0.1,localhost', cast=Csv())
+# Added 10.0.2.2 to default ALLOWED_HOSTS for local/dev access from emulator
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='127.0.0.1,localhost,10.0.2.2', cast=Csv())
 
 # Aplicaciones instaladas
 INSTALLED_APPS = [
@@ -61,11 +62,11 @@ TEMPLATES = [{
 DATABASES = {
     'default': {
         'ENGINE':   'django.db.backends.postgresql',
-        'NAME':     'dietetic',
-        'USER':     'postgres',
-        'PASSWORD': 'postgres',  
-        'HOST':     'localhost',
-        'PORT':     '5432',
+        'NAME':     config('DB_NAME', default='dietetic'),
+        'USER':     config('DB_USER', default='postgres'),
+        'PASSWORD': config('DB_PASSWORD', default='postgres'),  
+        'HOST':     config('DB_HOST', default='localhost'),
+        'PORT':     config('DB_PORT', default='5432'),
         'TEST': {
             'NAME': 'consulta_dietetica_test_db',
         },

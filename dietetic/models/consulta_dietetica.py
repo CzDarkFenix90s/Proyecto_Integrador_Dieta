@@ -1,4 +1,3 @@
-# dietetic/models/consulta_dietetica.py
 from django.db import models
 from .plan_nutricional import PlanNutricional
 from .paciente import Paciente
@@ -20,17 +19,17 @@ class ConsultaDietetica(models.Model):
     estimated_end     = models.DateTimeField()
     plan_nutricional  = models.ForeignKey(
         PlanNutricional,
-        on_delete=models.PROTECT,
+        on_delete=models.CASCADE, # Cambiado a CASCADE para permitir borrado en Admin
         related_name='consultas',
     )
     paciente          = models.ForeignKey(
         Paciente,
-        on_delete=models.PROTECT,
+        on_delete=models.CASCADE, # Cambiado a CASCADE
         related_name='consultas',
     )
     nutricionista     = models.ForeignKey(
         Nutricionista,
-        on_delete=models.PROTECT,
+        on_delete=models.CASCADE, # Cambiado a CASCADE
         related_name='consultas',
     )
     created_at        = models.DateTimeField(auto_now_add=True)

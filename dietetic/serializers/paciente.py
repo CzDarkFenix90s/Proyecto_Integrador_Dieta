@@ -2,6 +2,7 @@
 from rest_framework import serializers
 from dietetic.models import Paciente, SeguimientoNutricional
 from decimal import Decimal
+from django.contrib.auth.models import User
 
 
 class SeguimientoNutricionalSerializer(serializers.ModelSerializer):
@@ -16,11 +17,12 @@ class SeguimientoNutricionalSerializer(serializers.ModelSerializer):
 class PacienteSerializer(serializers.ModelSerializer):
     num_seguimientos = serializers.SerializerMethodField()
     seguimientos = SeguimientoNutricionalSerializer(many=True, read_only=True)
+    user_id = serializers.IntegerField(required=False, write_only=True)
 
     class Meta:
         model  = Paciente
         fields = [
-            'id', 'patient_code', 'full_name', 'age', 'goal',
+            'id', 'user_id', 'patient_code', 'full_name', 'age', 'goal',
             'dietary_restrictions', 'current_weight', 'height_cm',
             'status', 'medical_notes', 'bmi', 'num_seguimientos',
             'seguimientos', 'created_at', 'updated_at',
@@ -29,6 +31,16 @@ class PacienteSerializer(serializers.ModelSerializer):
 
     def get_num_seguimientos(self, obj):
         return obj.seguimientos.count()
+
+    def create(self, validated_data):
+        user_id = validated_data.pop('user_id', None)
+        if user_id:
+            try:
+                user = User.objects.get(id=user_id)
+                validated_data['user'] = user
+            except User.DoesNotExist:
+                pass
+        return super().create(validated_data)
 
 
 class AddSeguimientoNutricionalSerializer(serializers.Serializer):

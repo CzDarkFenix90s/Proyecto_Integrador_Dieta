@@ -1,10 +1,10 @@
-# dietetic/views/consulta_dietetica.py
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 from rest_framework.filters import OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
+from django.db.models import Q
 
 from dietetic.models import ConsultaDietetica
 from dietetic.serializers.consulta_dietetica import ConsultaDieteticaSerializer
@@ -19,31 +19,37 @@ class ConsultaDieteticaViewSet(viewsets.ModelViewSet):
     filterset_fields   = ['status', 'plan_nutricional', 'paciente', 'nutricionista']
     ordering_fields    = ['scheduled_time', 'created_at']
     ordering           = ['-scheduled_time']
-    http_method_names  = ['get', 'post', 'patch', 'delete', 'head', 'options']
 
     def get_queryset(self):
-        return (
-            ConsultaDietetica.objects
-            .select_related('plan_nutricional', 'paciente', 'nutricionista')
-            .all()
-        )
+        user = self.request.user
+        qs = ConsultaDietetica.objects.select_related(
+            'plan_nutricional', 'paciente', 'nutricionista', 'paciente__user', 'nutricionista__user'
+        ).all()
+
+        if user.is_staff or user.is_superuser:
+            return qs
+
+        return qs.filter(paciente__user=user)
+
+    @action(detail=False, methods=['get'], url_path='mine')
+    def my_appointments(self, request):
+        """
+        Devuelve SOLO las consultas del usuario logueado.
+        """
+        qs = self.get_queryset().filter(paciente__user=request.user)
+        page = self.paginate_queryset(qs)
+        if page is not None:
+            return self.get_paginated_response(
+                ConsultaDieteticaSerializer(page, many=True).data
+            )
+        return Response(ConsultaDieteticaSerializer(qs, many=True).data)
 
     @action(detail=True, methods=['post'], url_path='add-session-note')
     def add_session_note(self, request, pk=None):
         consulta = self.get_object()
-        if consulta.status not in ['programada', 'retrasada']:
-            return Response(
-                {'error': f'No se pueden agregar notas a una consulta con estado "{consulta.status}".'},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
         notes = request.data.get('notes', '').strip()
         if not notes:
-            return Response(
-                {'error': 'Debe enviar un texto en notes.'},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
+            return Response({'error': 'Debe enviar un texto en notes.'}, status=status.HTTP_400_BAD_REQUEST)
         consulta.session_notes = notes
         consulta.save(update_fields=['session_notes'])
         return Response(ConsultaDieteticaSerializer(consulta).data)
@@ -52,10 +58,7 @@ class ConsultaDieteticaViewSet(viewsets.ModelViewSet):
     def start_consultation(self, request, pk=None):
         consulta = self.get_object()
         if consulta.status != 'programada':
-            return Response(
-                {'error': 'Solo se pueden iniciar consultas programadas.'},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+            return Response({'error': 'Solo se pueden iniciar consultas programadas.'}, status=status.HTTP_400_BAD_REQUEST)
         consulta.status = 'en_curso'
         consulta.save(update_fields=['status'])
         return Response(ConsultaDieteticaSerializer(consulta).data)
@@ -67,15 +70,8 @@ class ConsultaDieteticaViewSet(viewsets.ModelViewSet):
         url_path='update-status',
     )
     def update_status(self, request, pk=None):
-        consulta       = self.get_object()
-        new_status     = request.data.get('status')
-        valid_statuses = [s[0] for s in ConsultaDietetica.STATUS_CHOICES]
-
-        if new_status not in valid_statuses:
-            return Response(
-                {'error': f'Estado inválido. Opciones válidas: {valid_statuses}'},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+        consulta = self.get_object()
+        new_status = request.data.get('status')
         consulta.status = new_status
         consulta.save(update_fields=['status'])
         return Response(ConsultaDieteticaSerializer(consulta).data)
@@ -87,8 +83,8 @@ class ConsultaDieteticaViewSet(viewsets.ModelViewSet):
         url_path='stats',
     )
     def stats(self, request):
+        qs = self.get_queryset()
         from django.db.models import Count
-        qs = ConsultaDietetica.objects.all()
         by_status = {
             s: qs.filter(status=s).count()
             for s, _ in ConsultaDietetica.STATUS_CHOICES

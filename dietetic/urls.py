@@ -23,7 +23,7 @@ router.register('consultas',       ConsultaDieteticaViewSet,    basename='consul
 
 urlpatterns = [
     path('health/',             health_check),
-    path('auth/register/',      RegisterView.as_view()),
+    path('auth/register/',      RegisterView.as_view(), name='register'),
     path('auth/login/',         CustomTokenView.as_view()),
     path('auth/token/refresh/', TokenRefreshView.as_view()),
     path('auth/token/verify/',  TokenVerifyView.as_view()),
