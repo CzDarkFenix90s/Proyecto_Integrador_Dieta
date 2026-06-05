@@ -7,7 +7,8 @@ class DieteticDomainTest(TestCase):
     def setUp(self):
         self.paciente = Paciente.objects.create(
             patient_code='PAC-001',
-            full_name='Ana López',
+            first_name='Ana',
+            last_name='López',
             age=31,
             goal='Perder 5 kg',
             dietary_restrictions='Sin lácteos',
@@ -69,5 +70,36 @@ class DieteticDomainTest(TestCase):
     def test_alimento_belongs_to_plan(self):
         self.assertEqual(self.alimento.plan_nutricional.goal, 'Pérdida de peso')
         self.assertEqual(self.alimento.estimated_preparation_minutes, round(120 / 30, 2))
+
+    def test_consulta_serializer_read_write(self):
+        from dietetic.serializers.consulta_dietetica import ConsultaDieteticaSerializer
+        
+        # 1. Probar lectura (to_representation): debe retornar diccionarios anidados
+        serializer = ConsultaDieteticaSerializer(instance=self.consulta)
+        data = serializer.data
+        
+        self.assertIsInstance(data['plan_nutricional'], dict)
+        self.assertEqual(data['plan_nutricional']['id'], self.plan.id)
+        self.assertIsInstance(data['nutricionista'], dict)
+        self.assertEqual(data['nutricionista']['id'], self.nutricionista.id)
+        self.assertIsInstance(data['paciente'], dict)
+        self.assertEqual(data['paciente']['id'], self.paciente.id)
+
+        # 2. Probar escritura (validación): debe aceptar IDs numéricos
+        write_data = {
+            "status": "programada",
+            "session_notes": "Prueba de guardado",
+            "scheduled_time": "2026-06-15T15:00:00Z",
+            "estimated_end": "2026-06-15T16:00:00Z",
+            "plan_nutricional": self.plan.id,
+            "nutricionista": self.nutricionista.id,
+            "paciente": self.paciente.id
+        }
+        
+        write_serializer = ConsultaDieteticaSerializer(data=write_data)
+        self.assertTrue(write_serializer.is_valid(), write_serializer.errors)
+        new_consulta = write_serializer.save()
+        self.assertEqual(new_consulta.session_notes, "Prueba de guardado")
+        self.assertEqual(new_consulta.plan_nutricional, self.plan)
 
 

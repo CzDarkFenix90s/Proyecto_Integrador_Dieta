@@ -17,7 +17,8 @@ class Paciente(models.Model):
         blank=True
     )
     patient_code           = models.CharField(max_length=20, unique=True)
-    full_name              = models.CharField(max_length=120)
+    first_name             = models.CharField(max_length=100, default='')
+    last_name              = models.CharField(max_length=100, default='')
     age                    = models.PositiveIntegerField(default=0)
     goal                   = models.CharField(max_length=200, default='Salud integral')
     dietary_restrictions   = models.TextField(blank=True, default='')
@@ -35,6 +36,12 @@ class Paciente(models.Model):
     def bmi(self):
         height_m = max(float(self.height_cm) / 100, 0.01)
         return round(float(self.current_weight) / (height_m ** 2), 2)
+
+    @property
+    def full_name(self):
+        if self.first_name or self.last_name:
+            return f'{self.first_name} {self.last_name}'.strip()
+        return self.user.username if self.user else 'Sin nombre'
 
     @property
     def full_profile(self):

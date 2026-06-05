@@ -33,9 +33,9 @@ class SeguimientoNutricionalInline(admin.TabularInline):
 
 @admin.register(Paciente)
 class PacienteAdmin(admin.ModelAdmin):
-    list_display    = ['id', 'patient_code', 'full_name', 'age', 'goal', 'status', 'current_weight', 'created_at']
+    list_display    = ['id', 'patient_code', 'first_name', 'last_name', 'age', 'goal', 'status', 'current_weight', 'created_at']
     list_filter     = ['status']
-    search_fields   = ['patient_code', 'full_name']
+    search_fields   = ['patient_code', 'first_name', 'last_name']
     inlines         = [SeguimientoNutricionalInline]
     readonly_fields = ['created_at', 'updated_at']
 
@@ -44,5 +44,5 @@ class PacienteAdmin(admin.ModelAdmin):
 class ConsultaDieteticaAdmin(admin.ModelAdmin):
     list_display    = ['id', 'paciente', 'nutricionista', 'plan_nutricional', 'status', 'scheduled_time', 'created_at']
     list_filter     = ['status', 'plan_nutricional']
-    search_fields   = ['paciente__full_name', 'nutricionista__last_name', 'plan_nutricional__name']
+    search_fields   = ['paciente__first_name', 'paciente__last_name', 'nutricionista__last_name', 'plan_nutricional__name']
     readonly_fields = ['created_at', 'updated_at']

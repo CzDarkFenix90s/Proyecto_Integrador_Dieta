@@ -8,6 +8,8 @@ class RegisterSerializer(serializers.Serializer):
     email     = serializers.EmailField()
     password  = serializers.CharField(min_length=8, write_only=True)
     password2 = serializers.CharField(write_only=True)
+    first_name = serializers.CharField(max_length=150, required=False, default='')
+    last_name = serializers.CharField(max_length=150, required=False, default='')
 
     def validate_username(self, value):
         if User.objects.filter(username=value).exists():
@@ -26,14 +28,22 @@ class RegisterSerializer(serializers.Serializer):
 
     def create(self, validated_data):
         validated_data.pop('password2')
-        user = User.objects.create_user(**validated_data)
+        first_name = validated_data.pop('first_name', '')
+        last_name = validated_data.pop('last_name', '')
 
-        # Crear automáticamente el perfil de Paciente al registrarse (si no lo creó la señal)
+        user = User.objects.create_user(
+            **validated_data,
+            first_name=first_name,
+            last_name=last_name
+        )
+
+        # Crear perfil de Paciente vinculándolo exactamente como Nutricionista
         Paciente.objects.get_or_create(
             user=user,
             defaults={
                 'patient_code': f'PAC-{user.id:04d}',
-                'full_name': user.username,
+                'first_name': user.first_name,
+                'last_name': user.last_name,
                 'status': 'activo'
             }
         )
@@ -57,7 +67,9 @@ class UserSerializer(serializers.ModelSerializer):
             return 'admin'
         if hasattr(obj, 'nutricionista_profile'):
             return 'nutricionista'
-        return 'paciente'
+        if hasattr(obj, 'paciente_profile'):
+            return 'paciente'
+        return 'paciente' # Default
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
@@ -73,6 +85,8 @@ class UserProfileSerializer(serializers.ModelSerializer):
             return 'admin'
         if hasattr(obj, 'nutricionista_profile'):
             return 'nutricionista'
+        if hasattr(obj, 'paciente_profile'):
+            return 'paciente'
         return 'paciente'
 
     def validate_email(self, value):

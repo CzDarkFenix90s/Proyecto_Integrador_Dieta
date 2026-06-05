@@ -2,15 +2,11 @@ from rest_framework import serializers
 from dietetic.models import ConsultaDietetica, PlanNutricional, Nutricionista, Paciente
 from dietetic.serializers.plan_nutricional import PlanNutricionalSerializer
 from dietetic.serializers.nutricionista import NutricionistaSerializer
+from dietetic.serializers.paciente import PacienteSerializer
 
 
 class ConsultaDieteticaSerializer(serializers.ModelSerializer):
-    # Campos para lectura detallada
-    plan_nutricional_detail = PlanNutricionalSerializer(source='plan_nutricional', read_only=True)
-    nutricionista_detail = NutricionistaSerializer(source='nutricionista', read_only=True)
-    paciente_nombre = serializers.CharField(source='paciente.full_name', read_only=True)
-
-    # Campos para escritura (IDs)
+    # Definimos los campos como llaves primarias (IDs) para recibir datos en POST/PUT
     plan_nutricional = serializers.PrimaryKeyRelatedField(queryset=PlanNutricional.objects.all())
     nutricionista = serializers.PrimaryKeyRelatedField(queryset=Nutricionista.objects.all())
     paciente = serializers.PrimaryKeyRelatedField(queryset=Paciente.objects.all())
@@ -23,7 +19,6 @@ class ConsultaDieteticaSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'status', 'session_notes', 'scheduled_time', 'estimated_end',
             'plan_nutricional', 'nutricionista', 'paciente',
-            'paciente_nombre', 'plan_nutricional_detail', 'nutricionista_detail',
             'duration_minutes', 'is_delayed', 'created_at',
         ]
 
@@ -32,3 +27,20 @@ class ConsultaDieteticaSerializer(serializers.ModelSerializer):
 
     def get_is_delayed(self, obj):
         return obj.is_delayed
+
+    def to_representation(self, instance):
+        """
+        Transforma los IDs numéricos en objetos detallados al enviar la respuesta (GET).
+        """
+        # 1. Obtiene la representación estándar (donde estos campos son solo IDs)
+        representation = super().to_representation(instance)
+        
+        # 2. Reemplaza los IDs con los datos completos usando los serializadores detallados
+        if instance.plan_nutricional:
+            representation['plan_nutricional'] = PlanNutricionalSerializer(instance.plan_nutricional).data
+        if instance.nutricionista:
+            representation['nutricionista'] = NutricionistaSerializer(instance.nutricionista).data
+        if instance.paciente:
+            representation['paciente'] = PacienteSerializer(instance.paciente).data
+            
+        return representation
