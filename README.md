@@ -129,6 +129,6 @@ El proyecto incluye el archivo **`dietetic_api_postman_collection.json`** en la 
 Para importarlo y probar todos los endpoints:
 1. Abre Postman o Thunder Client.
 2. Haz clic en **Import** y selecciona el archivo `dietetic_api_postman_collection.json`.
-3. Configura la variable de entorno `base_url` a `http://127.0.0.1:8000`.
+3. Configura la variable de entorno `base_url` a `https://paz-dietetica.uaeftt-ute.site`.
 4. Los endpoints están organizados secuencialmente en carpetas (desde el registro/login hasta las estadísticas y acciones avanzadas).
 5. Tras el Login exitoso, copia el valor de `access` del cuerpo de la respuesta y guárdalo en la variable de colección `token` de Postman para autorizar las peticiones protegidas.
