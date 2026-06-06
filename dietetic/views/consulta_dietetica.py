@@ -29,13 +29,17 @@ class ConsultaDieteticaViewSet(viewsets.ModelViewSet):
         if user.is_staff or user.is_superuser:
             return qs.all()
 
+        # Filtrar si el usuario es el paciente o el nutricionista de la cita
         return qs.filter(
             Q(paciente__user=user) | Q(nutricionista__user=user)
         ).distinct()
 
     @action(detail=False, methods=['get'], url_path='mine')
     def my_appointments(self, request):
-        qs = self.get_queryset().filter(paciente__user=request.user)
+        """
+        Devuelve las consultas vinculadas al usuario logueado (como paciente o nutri).
+        """
+        qs = self.get_queryset()
         page = self.paginate_queryset(qs)
         if page is not None:
             serializer = self.get_serializer(page, many=True)
@@ -48,7 +52,8 @@ class ConsultaDieteticaViewSet(viewsets.ModelViewSet):
     def add_session_note(self, request, pk=None):
         consulta = self.get_object()
         
-        if consulta.nutricionista.user != request.user and not request.user.is_staff:
+        # Solo el nutricionista asignado o un admin puede añadir notas
+        if not request.user.is_staff and not (hasattr(consulta.nutricionista, 'user') and consulta.nutricionista.user == request.user):
             return Response({'error': 'No tienes permiso para añadir notas a esta consulta.'}, status=status.HTTP_403_FORBIDDEN)
             
         notes = request.data.get('notes', '').strip()
@@ -63,7 +68,8 @@ class ConsultaDieteticaViewSet(viewsets.ModelViewSet):
     def start_consultation(self, request, pk=None):
         consulta = self.get_object()
         
-        if consulta.nutricionista.user != request.user and not request.user.is_staff:
+        # Solo el nutricionista asignado o un admin puede iniciar la consulta
+        if not request.user.is_staff and not (hasattr(consulta.nutricionista, 'user') and consulta.nutricionista.user == request.user):
             return Response({'error': 'No tienes permiso para iniciar esta consulta.'}, status=status.HTTP_403_FORBIDDEN)
 
         if consulta.status != 'programada':
