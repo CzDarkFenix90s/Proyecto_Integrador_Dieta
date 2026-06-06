@@ -1,54 +1,111 @@
-name: Django CI
+# .github/workflows/deploy.yml
+name: ShopAPI — CI/CD Pipeline
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ main, master ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ main, master ]
 
 jobs:
+
+  # ── Job 1: Tests ──────────────────────────────────────────
   test:
+    name: Run Tests
     runs-on: ubuntu-latest
-    
+
     services:
       postgres:
-        image: postgres:15
+        image: postgres:16
         env:
-          POSTGRES_DB: dietetic
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-        ports:
-          - 5432:5432
-        # Esperar a que postgres esté listo antes de continuar
+          POSTGRES_DB:       shopapi_test_db
+          POSTGRES_USER:     shopapi_user
+          POSTGRES_PASSWORD: shopapi_pass_123
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+        ports:
+          - 5432:5432
 
     steps:
-    - uses: actions/checkout@v4
-    
-    - name: Set up Python 3.12
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.12'
-        cache: 'pip' # Caché de dependencias para acelerar ejecuciones
-        
-    - name: Install Dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-        
-    - name: Run Tests
-      env:
-        SECRET_KEY: 'test_secret_key_github_actions_django'
-        DEBUG: 'False'
-        ALLOWED_HOSTS: 'localhost,127.0.0.1'
-        DB_NAME: 'dietetic'
-        DB_USER: 'postgres'
-        DB_PASSWORD: 'postgres'
-        DB_HOST: 'localhost'
-        DB_PORT: '5432'
-      run: |
-        python manage.py test
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+        with: 
+          version: "latest"
+
+      - name: Set up Python
+        run: uv python install 3.12
+
+      - name: Install dependencies
+        run: uv sync
+
+      - name: Run tests
+        env:
+          SECRET_KEY:    test-secret-key-for-ci-only
+          DEBUG:         True
+          ALLOWED_HOSTS: localhost,127.0.0.1
+          DB_NAME:       shopapi_test_db
+          DB_USER:       shopapi_user
+          DB_PASSWORD:   shopapi_pass_123
+          DB_HOST:       localhost
+          DB_PORT:       5432
+          TEST_DB_NAME:  shopapi_test_db
+          CORS_ALLOW_ALL_ORIGINS: True
+        run: uv run python manage.py test store --verbosity=2
+
+  # ── Job 2: Deploy ─────────────────────────────────────────
+  deploy:
+    name: Deploy to Azure VM
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Deploy to VM
+        env:
+          VPS_HOST:    ${{ secrets.VPS_HOST }}
+          VPS_USER:    ${{ secrets.VPS_USERNAME }}
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+        run: |
+          ssh $VPS_USER@$VPS_HOST << 'ENDSSH'
+            set -e
+
+            echo "── 1. Actualizando código ──"
+            cd $DEPLOY_PATH
+            git fetch origin
+            git reset --hard origin/main
+
+            echo "── 2. Instalando dependencias ──"
+            uv sync --frozen
+
+            echo "── 3. Aplicando migraciones ──"
+            uv run python manage.py migrate --noinput
+
+            echo "── 4. Recolectando estáticos ──"
+            uv run python manage.py collectstatic --noinput --clear
+
+            echo "── 5. Reiniciando servicios ──"
+            sudo systemctl restart gunicorn-shopapi
+            sudo systemctl restart nginx
+
+            echo "── 6. Verificando salud de la API ──"
+            sleep 3
+            curl -sf http://127.0.0.1/api/health/ && echo "API OK" || echo "API ERROR"
+
+            echo "Despliegue completado exitosamente"
+          ENDSSH
