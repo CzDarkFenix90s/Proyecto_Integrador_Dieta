@@ -82,7 +82,7 @@ jobs:
           VPS_USER:    ${{ secrets.VPS_USERNAME }}
           DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
         run: |
-          ssh $VPS_USER@$VPS_HOST << 'ENDSSH'
+          ssh -i ~/.ssh/github_actions -T $VPS_USER@$VPS_HOST << 'ENDSSH'
             set -e
 
             echo "── 1. Actualizando código ──"
