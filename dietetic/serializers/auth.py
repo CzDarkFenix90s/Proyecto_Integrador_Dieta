@@ -1,6 +1,8 @@
 # dietetic/serializers/auth.py
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
+from django.contrib.auth.models import User
+from django.db.models import Q
 
 
 class CustomTokenSerializer(TokenObtainPairSerializer):
@@ -23,7 +25,21 @@ class CustomTokenSerializer(TokenObtainPairSerializer):
         return token
 
     def validate(self, attrs):
+        # Permitir login con username o email
+        username_or_email = attrs.get("username")
+
+        # Buscar el usuario por username o email
+        user = User.objects.filter(
+            Q(username__iexact=username_or_email) | Q(email__iexact=username_or_email)
+        ).first()
+
+        if user:
+            # Si encontramos al usuario, reemplazamos el campo 'username' con su username real
+            # para que el validador base de SimpleJWT pueda autenticarlo correctamente.
+            attrs["username"] = user.username
+
         data = super().validate(attrs)
+
         data['user_id']  = self.user.id
         data['username'] = self.user.username
         data['email']    = self.user.email
