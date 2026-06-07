@@ -18,7 +18,7 @@ class PacienteSerializer(serializers.ModelSerializer):
     num_seguimientos = serializers.SerializerMethodField()
     seguimientos = SeguimientoNutricionalSerializer(many=True, read_only=True)
     full_name = serializers.SerializerMethodField()
-    user_id = serializers.IntegerField(required=False, write_only=True)
+    user_id = serializers.IntegerField(source='user.id', read_only=True)
 
     class Meta:
         model  = Paciente
@@ -37,7 +37,12 @@ class PacienteSerializer(serializers.ModelSerializer):
         return obj.full_name
 
     def create(self, validated_data):
-        user_id = validated_data.pop('user_id', None)
+        # Permitir enviar 'user_id' en el POST para vincular
+        request = self.context.get('request')
+        user_id = None
+        if request and 'user_id' in request.data:
+            user_id = request.data.get('user_id')
+
         if user_id:
             try:
                 user = User.objects.get(id=user_id)
