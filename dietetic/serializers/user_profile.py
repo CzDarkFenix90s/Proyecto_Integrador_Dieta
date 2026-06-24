@@ -4,8 +4,7 @@ from dietetic.models import UserProfile
 
 
 def validate_image(image):
-    """Valida que la imagen no supere 2MB y tenga formato permitido"""
-    max_size = 2 * 1024 * 1024  # 2MB
+    max_size = 2 * 1024 * 1024  
     if image.size > max_size:
         raise ValidationError("El tamaño máximo de la imagen es 2MB")
     
@@ -35,7 +34,6 @@ class UserProfileSerializer(serializers.ModelSerializer):
         return None
 
     def update(self, instance, validated_data):
-        # Valida la imagen si se está actualizando
         avatar = validated_data.get('avatar')
         if avatar:
             validate_image(avatar)
