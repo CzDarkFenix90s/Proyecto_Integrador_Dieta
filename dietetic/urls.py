@@ -2,6 +2,7 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from dietetic.views.detalle_plan_alimento import DetallePlanAlimentoViewSet
+from dietetic.views.momento_comida import MomentoComidaViewSet
 from dietetic.views.nutricionista import NutricionistaViewSet
 from dietetic.views.paciente import PacienteViewSet
 from rest_framework_simplejwt.views import TokenRefreshView, TokenVerifyView
@@ -23,6 +24,7 @@ router.register('consultas',       ConsultaDieteticaViewSet,    basename='consul
 router.register('detalles-plan',   DetallePlanAlimentoViewSet,  basename='detalle-plan')
 router.register('pacientes',       PacienteViewSet,             basename='paciente')
 router.register('nutricionistas',  NutricionistaViewSet,        basename='nutricionista')
+router.register('momentos-comida', MomentoComidaViewSet,        basename='momento-comida')
 
 urlpatterns = [
     path('health/',             health_check),

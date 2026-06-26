@@ -5,3 +5,4 @@ from .nutricionista import Nutricionista
 from .paciente import Paciente, SeguimientoNutricional
 from .consulta_dietetica import ConsultaDietetica
 from .detalle_plan_alimento import DetallePlanAlimento
+from .momento_comida import MomentoComida
