@@ -6,3 +6,4 @@ from .paciente import PacienteSerializer, SeguimientoNutricionalSerializer
 from .nutricionista import NutricionistaSerializer
 from .consulta_dietetica import ConsultaDieteticaSerializer
 from .user import UserSerializer, RegisterSerializer
+from .detalle_plan_alimento import DetallePlanAlimentoSerializer, DetallePlanAlimentoResumenSerializer

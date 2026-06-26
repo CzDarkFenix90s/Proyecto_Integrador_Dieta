@@ -1,6 +1,9 @@
 # dietetic/urls.py
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
+from dietetic.views.detalle_plan_alimento import DetallePlanAlimentoViewSet
+from dietetic.views.nutricionista import NutricionistaViewSet
+from dietetic.views.paciente import PacienteViewSet
 from rest_framework_simplejwt.views import TokenRefreshView, TokenVerifyView
 
 from dietetic.views.health      import health_check
@@ -9,17 +12,17 @@ from dietetic.views.user                import UserViewSet
 from dietetic.views.plan_nutricional    import PlanNutricionalViewSet
 from dietetic.views.alimento_programado import AlimentoProgramadoViewSet
 from dietetic.views.consulta_dietetica  import ConsultaDieteticaViewSet
-from dietetic.views.paciente            import PacienteViewSet
-from dietetic.views.nutricionista       import NutricionistaViewSet
+
 from dietetic.serializers.auth          import CustomTokenView
 
 router = DefaultRouter()
 router.register('users',           UserViewSet,                 basename='user')
-router.register('pacientes',       PacienteViewSet,             basename='paciente')
-router.register('nutricionistas',  NutricionistaViewSet,        basename='nutricionista')
 router.register('planes',          PlanNutricionalViewSet,      basename='plan-nutricional')
 router.register('alimentos',       AlimentoProgramadoViewSet,   basename='alimento')
 router.register('consultas',       ConsultaDieteticaViewSet,    basename='consulta')
+router.register('detalles-plan',   DetallePlanAlimentoViewSet,  basename='detalle-plan')
+router.register('pacientes',       PacienteViewSet,             basename='paciente')
+router.register('nutricionistas',  NutricionistaViewSet,        basename='nutricionista')
 
 urlpatterns = [
     path('health/',             health_check),

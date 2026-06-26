@@ -4,6 +4,7 @@ from .health import health_check
 from .plan_nutricional import PlanNutricionalViewSet
 from .alimento_programado import AlimentoProgramadoViewSet
 from .consulta_dietetica import ConsultaDieteticaViewSet
-from .paciente import PacienteViewSet
+from .detalle_plan_alimento import DetallePlanAlimentoViewSet
+from .paciente import PacienteViewSet, SeguimientoNutricionalViewSet
 from .nutricionista import NutricionistaViewSet
 from .user import UserViewSet
