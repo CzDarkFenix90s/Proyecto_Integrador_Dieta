@@ -5,4 +5,5 @@ from .alimento_programado import AlimentoProgramadoSerializer, AlimentoResumenSe
 from .paciente import PacienteSerializer, SeguimientoNutricionalSerializer
 from .nutricionista import NutricionistaSerializer
 from .consulta_dietetica import ConsultaDieteticaSerializer
+from .diaplan import DiaPlanSerializer
 from .user import UserSerializer, RegisterSerializer

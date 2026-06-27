@@ -7,4 +7,5 @@ from .consulta_dietetica import ConsultaDieteticaViewSet
 from .paciente import PacienteViewSet, SeguimientoNutricionalViewSet
 from .nutricionista import NutricionistaViewSet
 from .categoria_alimento import CategoriaAlimentoViewSet
+from .diaplan import DiaPlanViewSet
 from .user import UserViewSet

@@ -3,6 +3,7 @@ from dietetic.models import PlanNutricional, AlimentoProgramado, ConsultaDieteti
 from dietetic.models.categoria_alimento import CategoriaAlimento
 from dietetic.models.nutricionista import Nutricionista
 from dietetic.models.paciente import Paciente
+from dietetic.models.diaplan import DiaPlan
 
 
 @admin.register(PlanNutricional)
@@ -39,3 +40,10 @@ class CategoriaAlimentoAdmin(admin.ModelAdmin):
     list_display = ['id', 'nombre', 'descripcion', 'estado', 'created_at']
     list_filter = ['estado', 'created_at']
     search_fields = ['nombre', 'descripcion']
+
+@admin.register(DiaPlan)
+class DiaPlanAdmin(admin.ModelAdmin):
+    list_display = ['id', 'plan_nutricional', 'dia_semana', 'descripcion', 'created_at']
+    list_filter = ['plan_nutricional', 'dia_semana']
+    search_fields = ['descripcion']
+    search_fields = ['patient_code', 'full_name', 'user__first_name', 'user__last_name']
