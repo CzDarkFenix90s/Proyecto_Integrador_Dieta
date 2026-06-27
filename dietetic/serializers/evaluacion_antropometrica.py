@@ -7,6 +7,6 @@ class EvaluacionAntropometricaSerializer(serializers.ModelSerializer):
         model = EvaluacionAntropometrica
         fields = [
             'id', 'consulta_id' , 'peso', 'altura', 'imc',
-            'grasa_corporal_porcentaje', 'masa_muscular_kg', 'created_at',
+            'grasa_corporal_porcentaje', 'masa_muscular_kg', 'created_at'
         ]
         read_only_fields = ['id', 'imc', 'created_at']
