@@ -28,8 +28,6 @@ class ConsultaDieteticaViewSet(viewsets.ModelViewSet):
 
         if user.is_staff or user.is_superuser:
             return qs.all()
-
-        # Filtrar si el usuario es el paciente o el nutricionista de la cita
         return qs.filter(
             Q(paciente__user=user) | Q(nutricionista__user=user)
         ).distinct()
@@ -52,7 +50,6 @@ class ConsultaDieteticaViewSet(viewsets.ModelViewSet):
     def add_session_note(self, request, pk=None):
         consulta = self.get_object()
         
-        # Solo el nutricionista asignado o un admin puede añadir notas
         if not request.user.is_staff and not (hasattr(consulta.nutricionista, 'user') and consulta.nutricionista.user == request.user):
             return Response({'error': 'No tienes permiso para añadir notas a esta consulta.'}, status=status.HTTP_403_FORBIDDEN)
             
@@ -67,8 +64,7 @@ class ConsultaDieteticaViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['post'], url_path='start-consultation')
     def start_consultation(self, request, pk=None):
         consulta = self.get_object()
-        
-        # Solo el nutricionista asignado o un admin puede iniciar la consulta
+
         if not request.user.is_staff and not (hasattr(consulta.nutricionista, 'user') and consulta.nutricionista.user == request.user):
             return Response({'error': 'No tienes permiso para iniciar esta consulta.'}, status=status.HTTP_403_FORBIDDEN)
 
