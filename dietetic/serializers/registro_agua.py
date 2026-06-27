@@ -1,7 +1,6 @@
 from rest_framework import serializers
 from dietetic.models import RegistroAgua
 
-
 class RegistroAguaSerializer(serializers.ModelSerializer):
     paciente_id = serializers.PrimaryKeyRelatedField(source='paciente', read_only=True)
 

@@ -17,3 +17,5 @@ class RegistroAgua(models.Model):
 
     def __str__(self):
         return f'{self.paciente.full_name} - {self.fecha} - {self.cantidad_ml}ml'
+
+
