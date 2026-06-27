@@ -3,7 +3,6 @@ from dietetic.models import RegistroAgua
 from dietetic.serializers.registro_agua import RegistroAguaSerializer
 from dietetic.permissions import IsStaffOrReadOnly
 
-
 class RegistroAguaViewSet(viewsets.ModelViewSet):
     queryset = RegistroAgua.objects.all()
     serializer_class = RegistroAguaSerializer
