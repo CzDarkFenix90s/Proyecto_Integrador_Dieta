@@ -11,6 +11,7 @@ from rest_framework_simplejwt.views import TokenRefreshView, TokenVerifyView
 
 from dietetic.views.health      import health_check
 from dietetic.views.auth        import RegisterView, LogoutView
+from dietetic.views.perfil_usuario import PerfilUsuarioViewSet
 from dietetic.views.user                import UserViewSet
 from dietetic.views.plan_nutricional    import PlanNutricionalViewSet
 from dietetic.views.alimento_programado import AlimentoProgramadoViewSet
@@ -30,6 +31,7 @@ router.register('momentos-comida', MomentoComidaViewSet,        basename='moment
 router.register('dias-plan',      DiaPlanViewSet,              basename='dia-plan')
 router.register('categorias-alimento', CategoriaAlimentoViewSet, basename='categoria-alimento')
 router.register('seguimientos', SeguimientoNutricionalViewSet, basename='seguimiento-nutricional')
+router.register('perfiles-usuario', PerfilUsuarioViewSet, basename='perfil-usuario')
 urlpatterns = [
     path('health/',             health_check),
     path('auth/register/',      RegisterView.as_view(), name='register'),
@@ -37,5 +39,6 @@ urlpatterns = [
     path('auth/token/refresh/', TokenRefreshView.as_view()),
     path('auth/token/verify/',  TokenVerifyView.as_view()),
     path('auth/logout/',        LogoutView.as_view()),
+    path('users/perfil/',       UserViewSet.as_view({'get': 'perfil'}), name='user-perfil'),
     path('', include(router.urls)),
 ]

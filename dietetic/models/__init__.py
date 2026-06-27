@@ -8,3 +8,4 @@ from .detalle_plan_alimento import DetallePlanAlimento
 from .momento_comida import MomentoComida
 from .diaplan import DiaPlan
 from .categoria_alimento import CategoriaAlimento
+from .perfil_usuario import PerfilUsuario
