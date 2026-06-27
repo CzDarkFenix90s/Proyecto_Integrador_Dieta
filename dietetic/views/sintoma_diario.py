@@ -19,7 +19,6 @@ class SintomaDiarioViewSet(viewsets.ModelViewSet):
         user = self.request.user
         if user.is_staff:
             return SintomaDiario.objects.all()
-        # Si es un paciente, solo ve sus propios registros
         if hasattr(user, 'paciente_profile'):
             return SintomaDiario.objects.filter(paciente=user.paciente_profile)
         return SintomaDiario.objects.none()
