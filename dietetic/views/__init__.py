@@ -8,4 +8,5 @@ from .detalle_plan_alimento import DetallePlanAlimentoViewSet
 from .paciente import PacienteViewSet, SeguimientoNutricionalViewSet
 from .nutricionista import NutricionistaViewSet
 from .momento_comida import MomentoComidaViewSet
+from .diaplan import DiaPlanViewSet
 from .user import UserViewSet
