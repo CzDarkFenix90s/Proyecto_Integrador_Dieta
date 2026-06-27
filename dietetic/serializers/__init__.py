@@ -7,3 +7,4 @@ from .nutricionista import NutricionistaSerializer
 from .consulta_dietetica import ConsultaDieteticaSerializer
 from .diaplan import DiaPlanSerializer
 from .user import UserSerializer, RegisterSerializer
+from .momento_comida import MomentoComidaSerializer

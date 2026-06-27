@@ -9,3 +9,4 @@ from .nutricionista import NutricionistaViewSet
 from .categoria_alimento import CategoriaAlimentoViewSet
 from .diaplan import DiaPlanViewSet
 from .user import UserViewSet
+from .momento_comida import MomentoComidaViewSet

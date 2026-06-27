@@ -6,3 +6,4 @@ from .paciente import Paciente, SeguimientoNutricional
 from .consulta_dietetica import ConsultaDietetica
 from .categoria_alimento import CategoriaAlimento
 from .diaplan import DiaPlan
+from .momento_comida import MomentoComida
