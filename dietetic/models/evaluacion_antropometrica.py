@@ -1,7 +1,6 @@
 from django.db import models
 from .consulta_dietetica import ConsultaDietetica
 
-
 class EvaluacionAntropometrica(models.Model):
     consulta = models.ForeignKey(
         ConsultaDietetica,
