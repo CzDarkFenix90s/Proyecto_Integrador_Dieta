@@ -7,3 +7,4 @@ from .consulta_dietetica import ConsultaDietetica
 from .categoria_alimento import CategoriaAlimento
 from .diaplan import DiaPlan
 from .momento_comida import MomentoComida
+from .detalle_plan_alimento import DetallePlanAlimento

@@ -1,6 +1,7 @@
 from django.contrib import admin
 from dietetic.models import PlanNutricional, AlimentoProgramado, ConsultaDietetica, SeguimientoNutricional
 from dietetic.models.categoria_alimento import CategoriaAlimento
+from dietetic.models.detalle_plan_alimento import DetallePlanAlimento
 from dietetic.models.momento_comida import MomentoComida
 from dietetic.models.nutricionista import Nutricionista
 from dietetic.models.paciente import Paciente
@@ -54,3 +55,9 @@ class MomentoComidaAdmin(admin.ModelAdmin):
     list_display = ['id', 'nombre', 'descripcion', 'created_at']
     list_filter = ['created_at']
     search_fields = ['nombre', 'descripcion']
+
+@admin.register(DetallePlanAlimento)
+class DetallePlanAlimentoAdmin(admin.ModelAdmin):
+    list_display  = ['id', 'plan_nutricional', 'alimento_programado', 'quantity', 'observations', 'is_active', 'created_at']
+    list_filter   = ['is_active', 'plan_nutricional', 'alimento_programado']
+    search_fields = ['plan_nutricional__name', 'alimento_programado__name', 'observations']
