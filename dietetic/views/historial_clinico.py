@@ -3,7 +3,6 @@ from dietetic.models import HistorialClinico
 from dietetic.serializers.historial_clinico import HistorialClinicoSerializer
 from dietetic.permissions import IsStaffOrReadOnly
 
-
 class HistorialClinicoViewSet(viewsets.ModelViewSet):
     queryset = HistorialClinico.objects.all()
     serializer_class = HistorialClinicoSerializer
