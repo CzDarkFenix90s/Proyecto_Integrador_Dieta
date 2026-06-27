@@ -2,6 +2,7 @@ from django.contrib import admin
 from dietetic.models import PlanNutricional, AlimentoProgramado, ConsultaDietetica, SeguimientoNutricional
 from dietetic.models.categoria_alimento import CategoriaAlimento
 from dietetic.models.detalle_plan_alimento import DetallePlanAlimento
+from dietetic.models.factura_pagos import FacturaPago
 from dietetic.models.momento_comida import MomentoComida
 from dietetic.models.nutricionista import Nutricionista
 from dietetic.models.paciente import Paciente
@@ -61,3 +62,10 @@ class DetallePlanAlimentoAdmin(admin.ModelAdmin):
     list_display  = ['id', 'plan_nutricional', 'alimento_programado', 'quantity', 'observations', 'is_active', 'created_at']
     list_filter   = ['is_active', 'plan_nutricional', 'alimento_programado']
     search_fields = ['plan_nutricional__name', 'alimento_programado__name', 'observations']
+
+@admin.register(FacturaPago)
+class FacturaPagoAdmin(admin.ModelAdmin):
+    list_display  = ['id', 'invoice_number', 'paciente', 'consulta', 'payment_method', 'total_amount', 'status', 'payment_date', 'created_at']
+    list_filter   = ['status', 'payment_method', 'payment_date']
+    search_fields = ['invoice_number', 'paciente__full_name']
+    readonly_fields = ['created_at', 'updated_at']

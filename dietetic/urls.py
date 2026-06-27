@@ -4,6 +4,7 @@ from rest_framework.routers import DefaultRouter
 from dietetic.views.categoria_alimento import CategoriaAlimentoViewSet
 from dietetic.views.detalle_plan_alimento import DetallePlanAlimentoViewSet
 from dietetic.views.diaplan import DiaPlanViewSet
+from dietetic.views.factura_pagos import FacturaPagoViewSet
 from dietetic.views.momento_comida import MomentoComidaViewSet
 from dietetic.views.nutricionista import NutricionistaViewSet
 from dietetic.views.paciente import PacienteViewSet, SeguimientoNutricionalViewSet
@@ -30,7 +31,7 @@ router.register('seguimientos', SeguimientoNutricionalViewSet, basename='seguimi
 router.register('dias-plan',      DiaPlanViewSet,              basename='dia-plan')
 router.register('momentos-comida', MomentoComidaViewSet,        basename='momento-comida')
 router.register('detalles-plan',   DetallePlanAlimentoViewSet,  basename='detalle-plan')
-
+router.register('facturas',     FacturaPagoViewSet,            basename='factura-pago')
 urlpatterns = [
     path('health/',             health_check),
     path('auth/register/',      RegisterView.as_view(), name='register'),

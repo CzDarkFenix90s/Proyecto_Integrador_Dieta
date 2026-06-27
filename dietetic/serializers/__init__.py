@@ -9,3 +9,4 @@ from .diaplan import DiaPlanSerializer
 from .user import UserSerializer, RegisterSerializer
 from .momento_comida import MomentoComidaSerializer
 from .detalle_plan_alimento import DetallePlanAlimentoSerializer, DetallePlanAlimentoResumenSerializer
+from .factura_pagos import FacturaPagoSerializer

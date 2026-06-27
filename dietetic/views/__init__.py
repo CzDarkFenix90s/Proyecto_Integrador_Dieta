@@ -11,3 +11,4 @@ from .diaplan import DiaPlanViewSet
 from .user import UserViewSet
 from .momento_comida import MomentoComidaViewSet
 from .detalle_plan_alimento import DetallePlanAlimentoViewSet
+from .factura_pagos import FacturaPagoViewSet
