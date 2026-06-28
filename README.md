@@ -2,7 +2,7 @@
 
 ## 📋 Información del Proyecto
 - **Nombre del Proyecto**: Dietética API
-- **Integrantes del Grupo**: [Agregar nombres aquí]
+- **Integrantes del Grupo**: Camila Benavidez, Alexis Paz, Ariel Orozco 
 - **Tecnologías Utilizadas**: Django, Django REST Framework, PostgreSQL, JWT
 
 ---
