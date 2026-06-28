@@ -1,13 +1,13 @@
-# 🥗 Dietética API - Proyecto Final
+#  Dietética API - Proyecto Final
 
-## 📋 Información del Proyecto
+##  Información del Proyecto
 - **Nombre del Proyecto**: Dietética API
 - **Integrantes del Grupo**: Camila Benavidez, Alexis Paz, Ariel Orozco 
 - **Tecnologías Utilizadas**: Django, Django REST Framework, PostgreSQL, JWT
 
 ---
 
-## 🚀 PASO 1: Configurar y Ejecutar el Proyecto (LOCAL)
+##  PASO 1: Configurar y Ejecutar el Proyecto (LOCAL)
 
 ### 1.1 Requisitos Previos
 - Python 3.12+
@@ -63,11 +63,11 @@
    uv run python manage.py runserver
    ```
 
-✅ **El servidor estará corriendo en**: `http://localhost:8000`
+ **El servidor estará corriendo en**: `http://localhost:8000`
 
 ---
 
-## 📖 PASO 2: Verificar la Documentación de la API
+##  PASO 2: Verificar la Documentación de la API
 
 ### 2.1 Swagger UI (Más fácil de usar)
 - Abre en tu navegador: `http://localhost:8000/api/docs/swagger/`
@@ -78,7 +78,7 @@
 
 ---
 
-## 📮 PASO 3: Probar el Sistema de Correos
+##  PASO 3: Probar el Sistema de Correos
 
 ### 3.1 Modo Desarrollo (Sin Gmail)
 El sistema ya está configurado para usar el **Console Backend**, lo que significa que los correos se imprimen en la terminal. ¡No necesitas una cuenta de Gmail para probarlo!
@@ -134,7 +134,7 @@ Si quieres probar con Gmail real:
 
 ---
 
-## 🛡️ Endpoints Principales (Resumen)
+##  Endpoints Principales (Resumen)
 
 | Módulo | Base URL | Métodos |
 |--------|----------|---------|
@@ -148,7 +148,7 @@ Si quieres probar con Gmail real:
 
 ---
 
-## 📊 Modelos (24 Tablas en Total)
+##  Modelos (24 Tablas en Total)
 
 1. `User` (Django Default)
 2. `UserProfile` (role, avatar)
@@ -178,7 +178,7 @@ Si quieres probar con Gmail real:
 
 ---
 
-## 🔑 Autenticación y Autorización
+## Autenticación y Autorización
 
 - **JWT**: Usa `djangorestframework-simplejwt`
 - **Permisos**:
@@ -188,7 +188,7 @@ Si quieres probar con Gmail real:
 
 ---
 
-## 📱 Archivos Subidos (Media)
+##  Archivos Subidos (Media)
 
 - **Media URL**: `/media/`
 - **Media Root**: `media/` (carpeta en el proyecto)
@@ -196,7 +196,7 @@ Si quieres probar con Gmail real:
 
 ---
 
-## 🎫 Pasos para la Presentación
+##  Pasos para la Presentación
 
 1. **Inicia el servidor**:
    ```bash
@@ -223,7 +223,7 @@ Si quieres probar con Gmail real:
 
 ---
 
-## 📚 Entregables
+##  Entregables
 
 1. ✅ Código Fuente Completo
 2. ✅ Colección de Postman
@@ -237,7 +237,7 @@ Si quieres probar con Gmail real:
 
 ---
 
-## 💡 Tips Útiles
+##  Tips Útiles
 
 - Si tienes problemas con las migraciones:
   ```bash
@@ -260,4 +260,4 @@ Si quieres probar con Gmail real:
 
 ---
 
-¡¡Proyecto Listo para la Presentación!! 🥳🎉
+¡¡Proyecto Listo para la Presentación!! 
