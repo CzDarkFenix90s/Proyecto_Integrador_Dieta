@@ -1,28 +1,30 @@
-# dietetic/serializers/paciente.py
-from rest_framework import serializers
-from dietetic.models import Paciente, UserProfile  # <-- Cambiado por UserProfile
 from decimal import Decimal
 from django.contrib.auth.models import User
+from rest_framework import serializers
+from dietetic.models import Paciente, UserProfile
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
     paciente_id = serializers.PrimaryKeyRelatedField(source='paciente', read_only=True)
 
     class Meta:
-        model  = UserProfile  # <-- Cambiado aquí
+        model = UserProfile
         fields = ['id', 'paciente_id', 'weight_kg', 'waist_cm', 'notes', 'created_at']
         read_only_fields = ['id', 'created_at']
 
 
+# Alias para mantener la compatibilidad con otras partes que busquen el nombre anterior
+SeguimientoNutricionalSerializer = UserProfileSerializer
+
+
 class PacienteSerializer(serializers.ModelSerializer):
     num_seguimientos = serializers.SerializerMethodField()
-    # Se actualizó el serializer hijo para que use UserProfileSerializer
     seguimientos = UserProfileSerializer(many=True, read_only=True)
     full_name = serializers.SerializerMethodField()
     user_id = serializers.IntegerField(source='user.id', read_only=True)
 
     class Meta:
-        model  = Paciente
+        model = Paciente
         fields = [
             'id', 'user_id', 'patient_code', 'first_name', 'last_name', 'full_name',
             'age', 'goal', 'dietary_restrictions', 'current_weight', 'height_cm',
@@ -32,18 +34,15 @@ class PacienteSerializer(serializers.ModelSerializer):
         read_only_fields = ['id', 'created_at', 'updated_at']
 
     def get_num_seguimientos(self, obj):
-        # Asegúrate de que en el modelo 'Paciente' o 'UserProfile' tengas configurado 
-        # el related_name='seguimientos' para que esto no falle.
         try:
             return obj.seguimientos.count()
         except AttributeError:
             return 0
 
     def get_full_name(self, obj):
-        return obj.full_name
+        return getattr(obj, 'full_name', f"{obj.first_name} {obj.last_name}")
 
     def create(self, validated_data):
-        # Permitir enviar 'user_id' en el POST para vincular
         request = self.context.get('request')
         user_id = None
         if request and 'user_id' in request.data:
