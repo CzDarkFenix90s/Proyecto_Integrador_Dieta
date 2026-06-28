@@ -21,7 +21,6 @@ class DiaPlanViewSet(viewsets.ModelViewSet):
     search_fields = [
         'dia_semana',
         'descripcion',
-        'plan_nutricional__nombre',
     ]
 
     ordering_fields = [
