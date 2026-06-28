@@ -21,7 +21,6 @@ class FacturaPagoViewSet(viewsets.ModelViewSet):
 
     search_fields = [
         'invoice_number',
-        'paciente__full_name',
     ]
 
     ordering_fields = [
