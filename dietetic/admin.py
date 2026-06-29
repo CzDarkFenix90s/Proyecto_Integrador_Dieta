@@ -1,13 +1,15 @@
 from django.contrib import admin
-from dietetic.models import (
-    PlanNutricional, 
-    AlimentoProgramado, 
-    Nutricionista, 
-    Paciente, 
-    ConsultaDietetica,
-    ProgresoFoto,  
-    UserProfile    
-)
+from dietetic.models import PlanNutricional, AlimentoProgramado, ConsultaDietetica, SeguimientoNutricional
+from dietetic.models.categoria_alimento import CategoriaAlimento
+from dietetic.models.detalle_plan_alimento import DetallePlanAlimento
+from dietetic.models.factura_pagos import FacturaPago
+from dietetic.models.momento_comida import MomentoComida
+from dietetic.models.nutricionista import Nutricionista
+from dietetic.models.paciente import Paciente
+from dietetic.models.diaplan import DiaPlan
+from dietetic.models.registro_ejercicio import RegistroEjercicio
+from dietetic.models.rutina_ejercicio import RutinaEjercicio
+from dietetic.models.user_profile import UserProfile
 
 
 @admin.register(PlanNutricional)
@@ -25,38 +27,66 @@ class AlimentoProgramadoAdmin(admin.ModelAdmin):
     list_editable = ['sequence', 'portion_grams', 'is_active']
 
 
-@admin.register(Nutricionista)
-class NutricionistaAdmin(admin.ModelAdmin):
-    list_display  = ['id', 'first_name', 'last_name', 'professional_id', 'specialty', 'consultation_fee', 'is_active']
-    list_filter   = ['is_active']
-    search_fields = ['first_name', 'last_name', 'professional_id', 'specialty']
-    list_editable = ['consultation_fee', 'is_active']
-
-
-@admin.register(Paciente)
-class PacienteAdmin(admin.ModelAdmin):
-    list_display    = ['id', 'patient_code', 'first_name', 'last_name', 'age', 'goal', 'status', 'current_weight', 'created_at']
-    list_filter     = ['status']
-    search_fields   = ['patient_code', 'first_name', 'last_name']
-    readonly_fields = ['created_at', 'updated_at']
-
-
 @admin.register(ConsultaDietetica)
 class ConsultaDieteticaAdmin(admin.ModelAdmin):
-    list_display    = ['id', 'paciente', 'nutricionista', 'plan_nutricional', 'status', 'scheduled_time', 'created_at']
+    list_display    = ['id', 'plan_nutricional', 'status', 'scheduled_time', 'created_at']
     list_filter     = ['status', 'plan_nutricional']
     search_fields   = ['paciente__first_name', 'paciente__last_name', 'nutricionista__last_name', 'plan_nutricional__name']
     readonly_fields = ['created_at', 'updated_at']
 
+
+@admin.register(Nutricionista)
+class NutricionistaAdmin(admin.ModelAdmin):
+    list_display  = ['id', 'user', 'specialty', 'is_active', 'created_at']
+    list_filter   = ['is_active', 'specialty']
+    search_fields = ['user__first_name', 'user__last_name', 'specialty']
+
+@admin.register(CategoriaAlimento)
+class CategoriaAlimentoAdmin(admin.ModelAdmin):
+    list_display = ['id', 'nombre', 'descripcion', 'estado', 'created_at']
+    list_filter = ['estado', 'created_at']
+    search_fields = ['nombre', 'descripcion']
+
+@admin.register(DiaPlan)
+class DiaPlanAdmin(admin.ModelAdmin):
+    list_display = ['id', 'plan_nutricional', 'dia_semana', 'descripcion', 'created_at']
+    list_filter = ['plan_nutricional', 'dia_semana']
+    search_fields = ['descripcion']
+    search_fields = ['patient_code', 'full_name', 'user__first_name', 'user__last_name']
+
+@admin.register(MomentoComida)
+class MomentoComidaAdmin(admin.ModelAdmin):
+    list_display = ['id', 'nombre', 'descripcion', 'created_at']
+    list_filter = ['created_at']
+    search_fields = ['nombre', 'descripcion']
+
+@admin.register(DetallePlanAlimento)
+class DetallePlanAlimentoAdmin(admin.ModelAdmin):
+    list_display  = ['id', 'plan_nutricional', 'alimento_programado', 'quantity', 'observations', 'is_active', 'created_at']
+    list_filter   = ['is_active', 'plan_nutricional', 'alimento_programado']
+    search_fields = ['plan_nutricional__name', 'alimento_programado__name', 'observations']
+
+@admin.register(FacturaPago)
+class FacturaPagoAdmin(admin.ModelAdmin):
+    list_display  = ['id', 'invoice_number', 'paciente', 'consulta', 'payment_method', 'total_amount', 'status', 'payment_date', 'created_at']
+    list_filter   = ['status', 'payment_method', 'payment_date']
+    search_fields = ['invoice_number', 'paciente__full_name']
+    readonly_fields = ['created_at', 'updated_at']
+
+@admin.register(RegistroEjercicio)
+class RegistroEjercicioAdmin(admin.ModelAdmin):
+    list_display  = ['id', 'paciente', 'rutina_ejercicio', 'fecha', 'completado', 'created_at']
+    list_filter   = ['completado', 'fecha', 'rutina_ejercicio']
+    search_fields = ['paciente__patient_code', 'paciente__full_name', 'rutina_ejercicio__descripcion_rutina']
+
+@admin.register(RutinaEjercicio)
+class RutinaEjercicioAdmin(admin.ModelAdmin):
+    list_display  = ['id', 'plan_nutricional', 'descripcion_rutina', 'dias_semana', 'duracion_minutos', 'created_at']
+    list_filter   = ['plan_nutricional', 'dias_semana']
+    search_fields = ['plan_nutricional__name', 'descripcion_rutina', 'dias_semana']
 
 @admin.register(UserProfile)
 class UserProfileAdmin(admin.ModelAdmin):
     list_display  = ['id', 'user', 'role', 'created_at']
     list_filter   = ['role']
     search_fields = ['user__username', 'role']
-
-
-@admin.register(ProgresoFoto)
-class ProgresoFotoAdmin(admin.ModelAdmin):
-    list_display  = ['id', 'paciente']  # Corregido: removido 'created_at' que no existe en el modelo
-    search_fields = ['paciente__first_name', 'paciente__last_name']

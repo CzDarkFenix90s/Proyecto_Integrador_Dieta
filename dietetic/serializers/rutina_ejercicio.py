@@ -1,9 +1,10 @@
 from rest_framework import serializers
 from dietetic.models import RutinaEjercicio
+from dietetic.models.plan_nutricional import PlanNutricional
 
 
 class RutinaEjercicioSerializer(serializers.ModelSerializer):
-    plan_nutricional_id = serializers.PrimaryKeyRelatedField(source='plan_nutricional', read_only=True)
+    plan_nutricional_id = serializers.PrimaryKeyRelatedField(source='plan_nutricional',queryset=PlanNutricional.objects.all())
 
     class Meta:
         model = RutinaEjercicio

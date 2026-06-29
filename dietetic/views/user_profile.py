@@ -1,5 +1,5 @@
 from rest_framework import viewsets, permissions
-from dietetic.models import UserProfile
+from dietetic.models.user_profile import UserProfile
 from dietetic.serializers.user_profile import UserProfileSerializer
 from dietetic.permissions import IsStaffOrReadOnly
 

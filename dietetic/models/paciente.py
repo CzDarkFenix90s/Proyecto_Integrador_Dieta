@@ -50,7 +50,6 @@ class Paciente(models.Model):
     def __str__(self):
         return f'{self.full_name} — {self.patient_code}'
 
-
 class SeguimientoNutricional(models.Model):
     paciente    = models.ForeignKey(
         Paciente,
