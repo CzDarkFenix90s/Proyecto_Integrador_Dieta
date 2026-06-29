@@ -1,7 +1,8 @@
 from decimal import Decimal
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from dietetic.models import Paciente, UserProfile
+from dietetic.models.paciente import Paciente
+from dietetic.models.user_profile import UserProfile
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
