@@ -11,4 +11,7 @@ from .detalle_plan_alimento import DetallePlanAlimento
 from .factura_pagos import FacturaPago
 from .registro_ejercicio import RegistroEjercicio
 from .rutina_ejercicio import RutinaEjercicio
+<<<<<<< HEAD
 from .user_profile import UserProfile
+=======
+>>>>>>> a133248f3c1197f972303656de459e116eb65191

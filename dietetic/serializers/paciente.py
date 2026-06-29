@@ -1,27 +1,30 @@
-# dietetic/serializers/paciente.py
-from rest_framework import serializers
-from dietetic.models import Paciente, SeguimientoNutricional
 from decimal import Decimal
 from django.contrib.auth.models import User
+from rest_framework import serializers
+from dietetic.models import Paciente, UserProfile
 
 
-class SeguimientoNutricionalSerializer(serializers.ModelSerializer):
+class UserProfileSerializer(serializers.ModelSerializer):
     paciente_id = serializers.PrimaryKeyRelatedField(source='paciente', read_only=True)
 
     class Meta:
-        model  = SeguimientoNutricional
+        model = UserProfile
         fields = ['id', 'paciente_id', 'weight_kg', 'waist_cm', 'notes', 'created_at']
         read_only_fields = ['id', 'created_at']
 
 
+# Alias para mantener la compatibilidad con otras partes que busquen el nombre anterior
+SeguimientoNutricionalSerializer = UserProfileSerializer
+
+
 class PacienteSerializer(serializers.ModelSerializer):
     num_seguimientos = serializers.SerializerMethodField()
-    seguimientos = SeguimientoNutricionalSerializer(many=True, read_only=True)
+    seguimientos = UserProfileSerializer(many=True, read_only=True)
     full_name = serializers.SerializerMethodField()
     user_id = serializers.IntegerField(source='user.id', read_only=True)
 
     class Meta:
-        model  = Paciente
+        model = Paciente
         fields = [
             'id', 'user_id', 'patient_code', 'first_name', 'last_name', 'full_name',
             'age', 'goal', 'dietary_restrictions', 'current_weight', 'height_cm',
@@ -31,13 +34,15 @@ class PacienteSerializer(serializers.ModelSerializer):
         read_only_fields = ['id', 'created_at', 'updated_at']
 
     def get_num_seguimientos(self, obj):
-        return obj.seguimientos.count()
+        try:
+            return obj.seguimientos.count()
+        except AttributeError:
+            return 0
 
     def get_full_name(self, obj):
-        return obj.full_name
+        return getattr(obj, 'full_name', f"{obj.first_name} {obj.last_name}")
 
     def create(self, validated_data):
-        # Permitir enviar 'user_id' en el POST para vincular
         request = self.context.get('request')
         user_id = None
         if request and 'user_id' in request.data:
@@ -56,7 +61,7 @@ class PacienteSerializer(serializers.ModelSerializer):
         return super().create(validated_data)
 
 
-class AddSeguimientoNutricionalSerializer(serializers.Serializer):
+class AddUserProfileSerializer(serializers.Serializer):
     patient_id = serializers.IntegerField()
     weight_kg  = serializers.DecimalField(max_digits=6, decimal_places=2, min_value=Decimal('1.00'))
     waist_cm   = serializers.DecimalField(max_digits=6, decimal_places=2, required=False, allow_null=True)
