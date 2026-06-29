@@ -1,8 +1,11 @@
 # dietetic/serializers/__init__.py
-from .auth import CustomTokenSerializer
+from .auth import CustomTokenSerializer, PasswordResetRequestSerializer, PasswordResetConfirmSerializer
 from .plan_nutricional import PlanNutricionalSerializer
 from .alimento_programado import AlimentoProgramadoSerializer, AlimentoResumenSerializer
-from .paciente import PacienteSerializer, SeguimientoNutricionalSerializer
+from .paciente import PacienteSerializer, UserProfileSerializer, AddUserProfileSerializer
 from .nutricionista import NutricionistaSerializer
 from .consulta_dietetica import ConsultaDieteticaSerializer
 from .user import UserSerializer, RegisterSerializer
+from .preferencia_alimentaria import PreferenciaAlimentariaSerializer
+from .objetivo_paciente import ObjetivoPacienteSerializer
+from .logro_paciente import LogroPacienteSerializer
