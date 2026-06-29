@@ -1,5 +1,13 @@
 from django.contrib import admin
-from dietetic.models import PlanNutricional, AlimentoProgramado, Nutricionista, Paciente, SeguimientoNutricional, ConsultaDietetica
+from dietetic.models import (
+    PlanNutricional, 
+    AlimentoProgramado, 
+    Nutricionista, 
+    Paciente, 
+    ConsultaDietetica,
+    ProgresoFoto,  
+    UserProfile    
+)
 
 
 @admin.register(PlanNutricional)
@@ -25,18 +33,11 @@ class NutricionistaAdmin(admin.ModelAdmin):
     list_editable = ['consultation_fee', 'is_active']
 
 
-class SeguimientoNutricionalInline(admin.TabularInline):
-    model  = SeguimientoNutricional
-    extra  = 0
-    fields = ['weight_kg', 'waist_cm', 'notes']
-
-
 @admin.register(Paciente)
 class PacienteAdmin(admin.ModelAdmin):
     list_display    = ['id', 'patient_code', 'first_name', 'last_name', 'age', 'goal', 'status', 'current_weight', 'created_at']
     list_filter     = ['status']
     search_fields   = ['patient_code', 'first_name', 'last_name']
-    inlines         = [SeguimientoNutricionalInline]
     readonly_fields = ['created_at', 'updated_at']
 
 
@@ -46,3 +47,16 @@ class ConsultaDieteticaAdmin(admin.ModelAdmin):
     list_filter     = ['status', 'plan_nutricional']
     search_fields   = ['paciente__first_name', 'paciente__last_name', 'nutricionista__last_name', 'plan_nutricional__name']
     readonly_fields = ['created_at', 'updated_at']
+
+
+@admin.register(UserProfile)
+class UserProfileAdmin(admin.ModelAdmin):
+    list_display  = ['id', 'user', 'role', 'created_at']
+    list_filter   = ['role']
+    search_fields = ['user__username', 'role']
+
+
+@admin.register(ProgresoFoto)
+class ProgresoFotoAdmin(admin.ModelAdmin):
+    list_display  = ['id', 'paciente']  # Corregido: removido 'created_at' que no existe en el modelo
+    search_fields = ['paciente__first_name', 'paciente__last_name']

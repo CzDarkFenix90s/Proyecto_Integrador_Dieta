@@ -34,10 +34,7 @@ class ConsultaDieteticaViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['get'], url_path='mine')
     def my_appointments(self, request):
-        """
-        Devuelve las consultas vinculadas al usuario logueado (como paciente o nutri).
-        """
-        qs = self.get_queryset()
+        qs = self.get_queryset().filter(paciente__user=request.user)
         page = self.paginate_queryset(qs)
         if page is not None:
             serializer = self.get_serializer(page, many=True)

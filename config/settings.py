@@ -21,14 +21,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     
-    # Terceros
+    
     'rest_framework',
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
     'django_filters',
     'corsheaders',
-    
-    # Apps Propias
+
     'dietetic',
 ]
 
@@ -57,8 +56,7 @@ TEMPLATES = [{
     ]},
 }]
 
-# CONFIGURACIÓN DE POSTGRESQL (Corregida sin 'config')
-# REEMPLAZA 'TU_CONTRASEÑA_DE_PGADMIN' por tu clave real
+
 DATABASES = {
     'default': {
         'ENGINE':   'django.db.backends.postgresql',
@@ -73,18 +71,16 @@ DATABASES = {
     }
 }
 
-# Internacionalización
 LANGUAGE_CODE = 'es-ec'
 TIME_ZONE     = 'America/Guayaquil'
 USE_I18N      = True
 USE_TZ        = True
 
-# Estáticos
+
 STATIC_URL  = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Django Rest Framework
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
