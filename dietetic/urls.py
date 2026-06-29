@@ -20,6 +20,7 @@ from dietetic.views.alimento_programado import AlimentoProgramadoViewSet
 from dietetic.views.consulta_dietetica  import ConsultaDieteticaViewSet
 
 from dietetic.serializers.auth          import CustomTokenView
+from dietetic.views.user_profile import UserProfileViewSet
 
 router = DefaultRouter()
 router.register('users',           UserViewSet,                 basename='user')
@@ -36,6 +37,8 @@ router.register('detalles-plan',   DetallePlanAlimentoViewSet,  basename='detall
 router.register('facturas',     FacturaPagoViewSet,            basename='factura-pago')
 router.register('rutinas-ejercicio', RutinaEjercicioViewSet, basename='rutina-ejercicio')
 router.register('registros-ejercicio', RegistroEjercicioViewSet, basename='registro-ejercicio')
+router.register('profiles',        UserProfileViewSet,          basename='user-profile')
+
 urlpatterns = [
     path('health/',             health_check),
     path('auth/register/',      RegisterView.as_view(), name='register'),

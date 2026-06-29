@@ -9,6 +9,7 @@ from dietetic.models.paciente import Paciente
 from dietetic.models.diaplan import DiaPlan
 from dietetic.models.registro_ejercicio import RegistroEjercicio
 from dietetic.models.rutina_ejercicio import RutinaEjercicio
+from dietetic.models.user_profile import UserProfile
 
 
 @admin.register(PlanNutricional)
@@ -83,3 +84,9 @@ class RutinaEjercicioAdmin(admin.ModelAdmin):
     list_display  = ['id', 'plan_nutricional', 'descripcion_rutina', 'dias_semana', 'duracion_minutos', 'created_at']
     list_filter   = ['plan_nutricional', 'dias_semana']
     search_fields = ['plan_nutricional__name', 'descripcion_rutina', 'dias_semana']
+
+@admin.register(UserProfile)
+class UserProfileAdmin(admin.ModelAdmin):
+    list_display  = ['id', 'user', 'role', 'created_at']
+    list_filter   = ['role']
+    search_fields = ['user__username', 'role']

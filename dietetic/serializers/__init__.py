@@ -12,3 +12,4 @@ from .detalle_plan_alimento import DetallePlanAlimentoSerializer, DetallePlanAli
 from .factura_pagos import FacturaPagoSerializer
 from .registro_ejercicio import RegistroEjercicioSerializer
 from .rutina_ejercicio import RutinaEjercicioSerializer
+from .user_profile import UserProfileSerializer

@@ -14,3 +14,4 @@ from .detalle_plan_alimento import DetallePlanAlimentoViewSet
 from .factura_pagos import FacturaPagoViewSet
 from .registro_ejercicio import RegistroEjercicioViewSet
 from .rutina_ejercicio import RutinaEjercicio
+from .user_profile import UserProfileViewSet
