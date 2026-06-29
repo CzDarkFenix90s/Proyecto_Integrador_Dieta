@@ -7,6 +7,8 @@ from dietetic.models.momento_comida import MomentoComida
 from dietetic.models.nutricionista import Nutricionista
 from dietetic.models.paciente import Paciente
 from dietetic.models.diaplan import DiaPlan
+from dietetic.models.registro_ejercicio import RegistroEjercicio
+from dietetic.models.rutina_ejercicio import RutinaEjercicio
 
 
 @admin.register(PlanNutricional)
@@ -69,3 +71,15 @@ class FacturaPagoAdmin(admin.ModelAdmin):
     list_filter   = ['status', 'payment_method', 'payment_date']
     search_fields = ['invoice_number', 'paciente__full_name']
     readonly_fields = ['created_at', 'updated_at']
+
+@admin.register(RegistroEjercicio)
+class RegistroEjercicioAdmin(admin.ModelAdmin):
+    list_display  = ['id', 'paciente', 'rutina_ejercicio', 'fecha', 'completado', 'created_at']
+    list_filter   = ['completado', 'fecha', 'rutina_ejercicio']
+    search_fields = ['paciente__patient_code', 'paciente__full_name', 'rutina_ejercicio__descripcion_rutina']
+
+@admin.register(RutinaEjercicio)
+class RutinaEjercicioAdmin(admin.ModelAdmin):
+    list_display  = ['id', 'plan_nutricional', 'descripcion_rutina', 'dias_semana', 'duracion_minutos', 'created_at']
+    list_filter   = ['plan_nutricional', 'dias_semana']
+    search_fields = ['plan_nutricional__name', 'descripcion_rutina', 'dias_semana']

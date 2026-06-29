@@ -12,3 +12,5 @@ from .user import UserViewSet
 from .momento_comida import MomentoComidaViewSet
 from .detalle_plan_alimento import DetallePlanAlimentoViewSet
 from .factura_pagos import FacturaPagoViewSet
+from .registro_ejercicio import RegistroEjercicioViewSet
+from .rutina_ejercicio import RutinaEjercicio

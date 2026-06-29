@@ -9,3 +9,5 @@ from .diaplan import DiaPlan
 from .momento_comida import MomentoComida
 from .detalle_plan_alimento import DetallePlanAlimento
 from .factura_pagos import FacturaPago
+from .registro_ejercicio import RegistroEjercicio
+from .rutina_ejercicio import RutinaEjercicio

@@ -10,3 +10,5 @@ from .user import UserSerializer, RegisterSerializer
 from .momento_comida import MomentoComidaSerializer
 from .detalle_plan_alimento import DetallePlanAlimentoSerializer, DetallePlanAlimentoResumenSerializer
 from .factura_pagos import FacturaPagoSerializer
+from .registro_ejercicio import RegistroEjercicioSerializer
+from .rutina_ejercicio import RutinaEjercicioSerializer

@@ -1,7 +1,8 @@
 from rest_framework import serializers
 from dietetic.models import ConsultaDietetica, PlanNutricional, Nutricionista, Paciente
 from dietetic.serializers.plan_nutricional import PlanNutricionalSerializer
-
+from dietetic.serializers.nutricionista import NutricionistaSerializer
+from dietetic.serializers.paciente import PacienteSerializer
 
 
 class ConsultaDieteticaSerializer(serializers.ModelSerializer):
@@ -37,5 +38,9 @@ class ConsultaDieteticaSerializer(serializers.ModelSerializer):
         # 2. Reemplaza los IDs con los datos completos usando los serializadores detallados
         if instance.plan_nutricional:
             representation['plan_nutricional'] = PlanNutricionalSerializer(instance.plan_nutricional).data
+        if instance.nutricionista:
+            representation['nutricionista'] = NutricionistaSerializer(instance.nutricionista).data
+        if instance.paciente:
+            representation['paciente'] = PacienteSerializer(instance.paciente).data
             
         return representation
