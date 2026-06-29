@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.core.exceptions import ValidationError
-from dietetic.models import UserProfile
+from dietetic.models.user_profile import UserProfile
 
 
 def validate_image(image):
